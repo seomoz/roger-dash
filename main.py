@@ -51,23 +51,27 @@ def getCuratedAppDetails(envs):
     cpus = {}
     mem = {}
     for env in envs:
-        rawData = getRawAppDetails(env)
-        for id, (running, cpusAlloc, memAlloc) in rawData.items():
-            team = 'others'
-            for team_name, patterns in teamNames.items():
-                if isMatchingName(id, patterns):
-                        team = team_name
-                        break
-            if team in tasks:
-                apps[team] += 1
-                tasks[team] += running
-                cpus[team] += cpusAlloc
-                mem[team] += memAlloc
-            else:
-                apps[team] = 1
-                tasks[team] = running
-                cpus[team] = cpusAlloc
-                mem[team] = memAlloc
+        try:
+            rawData = getRawAppDetails(env)
+            for id, (running, cpusAlloc, memAlloc) in rawData.items():
+                team = 'others'
+                for team_name, patterns in teamNames.items():
+                    if isMatchingName(id, patterns):
+                            team = team_name
+                            break
+                if team in tasks:
+                    apps[team] += 1
+                    tasks[team] += running
+                    cpus[team] += cpusAlloc
+                    mem[team] += memAlloc
+                else:
+                    apps[team] = 1
+                    tasks[team] = running
+                    cpus[team] = cpusAlloc
+                    mem[team] = memAlloc
+        except Exception as e:
+            print e
+            pass # possible connection error.. continue to next env
 
     return { 'tasks':tasks, 'apps': apps, 'cpus':cpus, 'mem':mem }
 
