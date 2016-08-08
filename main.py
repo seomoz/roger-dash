@@ -6,6 +6,7 @@ import re
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
+app.secret_key = os.environ['APP_SECRET_KEY']
 
 def getAppDetails(envs):
     appDetails = getCuratedAppDetails(envs)
@@ -71,6 +72,7 @@ def getCuratedAppDetails(envs):
                     mem[team] = memAlloc
         except Exception as e:
             print e
+            flash('Had trouble accessing {} environment. Please try again soon.'.format(env))
             pass # possible connection error.. continue to next env
 
     return { 'tasks':tasks, 'apps': apps, 'cpus':cpus, 'mem':mem }

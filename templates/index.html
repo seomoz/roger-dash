@@ -1,11 +1,5 @@
+{% extends "layout.html" %}
 {% block body %}
-
-<table class="columns" style="width: 75%" align=center>
-    <tr>
-        <td align=center>Dashboard</td>
-    </tr>
-</table>
-<p/>
 <table class="columns" style="width: 75%" align=center>
     <tr>
         <td>Click one of these to view specific details - {% for entry in envs %}<a href='?env={{entry}}'>{{ entry }}</a> | {% endfor %}<a href='?env='>ALL</td>
@@ -14,14 +8,14 @@
 <p/>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <table class="columns" style="width: 75%" align=center>
-  <tr>
-    <td align=center><div id="tasks_chart_div" style="border: 1px solid #ccc"></div></td>
-    <td align=center><div id="apps_chart_div" style="border: 1px solid #ccc"></div></td>
-  </tr>
-  <tr>
-    <td align=center><div id="cpu_chart_div" style="border: 1px solid #ccc"></div></td>
-    <td align=center><div id="mem_chart_div" style="border: 1px solid #ccc"></div></td>
-  </tr>
+    <tr>
+        <td align=center><div id="tasks_chart_div" style="border: 1px solid #ccc"></div></td>
+        <td align=center><div id="apps_chart_div" style="border: 1px solid #ccc"></div></td>
+    </tr>
+    <tr>
+        <td align=center><div id="cpu_chart_div" style="border: 1px solid #ccc"></div></td>
+        <td align=center><div id="mem_chart_div" style="border: 1px solid #ccc"></div></td>
+    </tr>
 </table>
 
 <script type='text/javascript'>//<![CDATA[
