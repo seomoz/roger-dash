@@ -7,6 +7,7 @@ import re
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
 app.secret_key = os.environ['APP_SECRET_KEY']
+base_path = os.getenv('HTTP_PREFIX', '')
 
 def getAppDetails(envs):
     appDetails = getCuratedAppDetails(envs)
@@ -86,14 +87,18 @@ def isMatchingName(name, patterns):
 def getRawAppDetails(env):
     endpoints = json.loads(os.environ['MARATHON_ENDPOINTS'])
     url = endpoints[env] + '/v2/apps'
-    resp = requests.get(url, auth=(os.environ['MARATHON_USER'], os.environ['MARATHON_PWD']))
+    resp = requests.get(url, auth=(os.environ['MARATHON_USER'], os.environ['MARATHON_PASSWD']))
     rdata = resp.json()
     apps = {}
     for app in rdata['apps']:
         apps [app['id']] = [ app['tasksRunning'], float(app['instances']) * app['cpus'], float(app['instances']) * app['mem'] ]
     return apps
 
-@app.route("/")
+@app.route("{}/ping".format(base_path))
+def ping():
+    return 'PONG'
+
+@app.route("{}/".format(base_path))
 def index():
     endpoints = json.loads(os.environ['MARATHON_ENDPOINTS'])
     envs = endpoints.keys()
