@@ -6,15 +6,15 @@
     </tr>
 </table>
 {% with messages = get_flashed_messages() %}
-  {% if messages %}
-  <table class="columns" style="width: 75%" align=center>
-      <tr>
-          <td><ul class=flashes>
-              {% for message in messages %}<li>{{ message }}</li>{% endfor %}
-              </ul>
-          </td>
-</tr>
+{% if messages %}
+<table class="columns" style="width: 75%" align=center>
+    <tr>
+        <td><ul class=flashes>
+            {% for message in messages %}<li>{{ message }}</li>{% endfor %}
+            </ul>
+        </td>
+    </tr>
 </table>
-  {% endif %}
+{% endif %}
 {% endwith %}
 {% block body %}{% endblock %}
