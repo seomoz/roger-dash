@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+{% block body %}
+<table class="columns" style="width: 75%" align=center>
+    <tr>
+        <td>Click one of these to view specific details - {% for entry in envs %}<a href='?env={{entry}}'>{{ entry }}</a> | {% endfor %}<a href='?env='>ALL</td>
+    </tr>
+</table>
+<p/>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<table class="columns" style="width: 75%" align=center>
+    <tr>
+        <td align=center><div id="tasks_chart_div" style="border: 1px solid #ccc"></div></td>
+        <td align=center><div id="apps_chart_div" style="border: 1px solid #ccc"></div></td>
+    </tr>
+    <tr>
+        <td align=center><div id="cpu_chart_div" style="border: 1px solid #ccc"></div></td>
+        <td align=center><div id="mem_chart_div" style="border: 1px solid #ccc"></div></td>
+    </tr>
+</table>
+
+<script type='text/javascript'>//<![CDATA[
+
+google.load('visualization', '1', {packages: ['corechart']});
+google.setOnLoadCallback(drawCharts);
+
+function drawCharts() {
+
+      var taskData = google.visualization.arrayToDataTable([
+        ['Team', 'Task Count'],
+        {% for entry in app_data.tasks.data %}
+        ['{{app_data.tasks.name[loop.index - 1]}}', {{app_data.tasks.data[loop.index - 1]}}]{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]);
+
+      var options = {
+          title:'{{app_data.tasks.title}}',
+          width:'500',
+          height:300,
+          pieSliceText:'value',
+          is3D: true };
+
+      var chart = new google.visualization.PieChart(document.getElementById('tasks_chart_div'));
+      chart.draw(taskData, options);
+
+      var appdata = google.visualization.arrayToDataTable([
+        ['Team', 'App Count'],
+        {% for entry in app_data.apps.data %}
+        ['{{app_data.apps.name[loop.index - 1]}}', {{app_data.apps.data[loop.index - 1]}}]{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]);
+
+      var options = {
+          title:'{{app_data.apps.title}}',
+          width:'500',
+          height:300,
+          pieSliceText:'value',
+          is3D: true };
+
+      var chartApp = new google.visualization.PieChart(document.getElementById('apps_chart_div'));
+      chartApp.draw(appdata, options);
+
+      var cpuData = google.visualization.arrayToDataTable([
+        ['Team', 'Cores Allocated'],
+        {% for entry in app_data.cpus.data %}
+        ['{{app_data.cpus.name[loop.index - 1]}}', {{app_data.cpus.data[loop.index - 1]}}]{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]);
+
+      var options = {
+          title:'{{app_data.cpus.title}}',
+          width:'500',
+          height:300,
+          pieSliceText:'value',
+          is3D: true };
+
+      var chartCpu = new google.visualization.PieChart(document.getElementById('cpu_chart_div'));
+      chartCpu.draw(cpuData, options);
+
+      var memData = google.visualization.arrayToDataTable([
+        ['Team', 'Memory Allocated'],
+        {% for entry in app_data.mem.data %}
+        ['{{app_data.mem.name[loop.index - 1]}}', {{app_data.mem.data[loop.index - 1]}}]{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]);
+
+      var memOptions = {
+          title:'{{app_data.mem.title}}',
+          width:'500',
+          height:300,
+          pieSliceText:'value',
+          is3D: true };
+
+      var chartMem = new google.visualization.PieChart(document.getElementById('mem_chart_div'));
+      chartMem.draw(memData, memOptions);
+
+    }
+//]]>
+
+</script>
+
+
+{% endblock %}

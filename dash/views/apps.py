@@ -37,7 +37,7 @@ def getAppDetails(envs):
     return retDict
 
 def getTeamNamesDict():
-    return json.loads(os.environ['TEAMS'])
+    return json.loads(os.environ['GROUP_DATA'])
 
 def getCuratedAppDetails(envs):
     teamNames = getTeamNamesDict()
