@@ -1,13 +1,25 @@
-from flask import Flask, flash, redirect, render_template, request, session, abort
+from flask import Blueprint, flash, redirect, render_template, request, session, abort
+import os
 import os
 import json
 import requests
-import re
 
-tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-app = Flask(__name__, template_folder=tmpl_dir)
-app.secret_key = os.environ['APP_SECRET_KEY']
-base_path = os.getenv('HTTP_PREFIX', '')
+main = Blueprint('index', __name__)
+
+@main.route('/')
+def index():
+    endpoints = json.loads(os.environ['MARATHON_ENDPOINTS'])
+    envs = endpoints.keys()
+    selectedEnvs = envs
+    env = request.args.get('env')
+    if env and env in envs:
+        selectedEnvs = [env]
+    apps = getAppDetails(selectedEnvs)
+    return render_template('index.html',**locals())
+
+@main.route('/ping')
+def ping():
+    return 'PONG'
 
 def getAppDetails(envs):
     appDetails = getCuratedAppDetails(envs)
@@ -93,21 +105,3 @@ def getRawAppDetails(env):
     for app in rdata['apps']:
         apps [app['id']] = [ app['tasksRunning'], float(app['instances']) * app['cpus'], float(app['instances']) * app['mem'] ]
     return apps
-
-@app.route("{}/ping".format(base_path))
-def ping():
-    return 'PONG'
-
-@app.route("{}/".format(base_path))
-def index():
-    endpoints = json.loads(os.environ['MARATHON_ENDPOINTS'])
-    envs = endpoints.keys()
-    selectedEnvs = envs
-    env = request.args.get('env')
-    if env and env in envs:
-        selectedEnvs = [env]
-    apps = getAppDetails(selectedEnvs)
-    return render_template('index.html',**locals())
-
-if __name__ == "__main__":
-    app.run(debug=os.getenv('DEBUG', ''))
