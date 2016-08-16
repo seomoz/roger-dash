@@ -27,13 +27,13 @@ function drawCharts() {
 
       var taskData = google.visualization.arrayToDataTable([
         ['Team', 'Task Count'],
-        {% for entry in apps.tasks.data %}
-        ['{{apps.tasks.name[loop.index - 1]}}', {{apps.tasks.data[loop.index - 1]}}]{% if not loop.last %},{% endif %}
+        {% for entry in app_data.tasks.data %}
+        ['{{app_data.tasks.name[loop.index - 1]}}', {{app_data.tasks.data[loop.index - 1]}}]{% if not loop.last %},{% endif %}
         {% endfor %}
       ]);
 
       var options = {
-          title:'{{apps.tasks.title}}',
+          title:'{{app_data.tasks.title}}',
           width:'500',
           height:300,
           pieSliceText:'value',
@@ -44,13 +44,13 @@ function drawCharts() {
 
       var appdata = google.visualization.arrayToDataTable([
         ['Team', 'App Count'],
-        {% for entry in apps.apps.data %}
-        ['{{apps.apps.name[loop.index - 1]}}', {{apps.apps.data[loop.index - 1]}}]{% if not loop.last %},{% endif %}
+        {% for entry in app_data.apps.data %}
+        ['{{app_data.apps.name[loop.index - 1]}}', {{app_data.apps.data[loop.index - 1]}}]{% if not loop.last %},{% endif %}
         {% endfor %}
       ]);
 
       var options = {
-          title:'{{apps.apps.title}}',
+          title:'{{app_data.apps.title}}',
           width:'500',
           height:300,
           pieSliceText:'value',
@@ -61,13 +61,13 @@ function drawCharts() {
 
       var cpuData = google.visualization.arrayToDataTable([
         ['Team', 'Cores Allocated'],
-        {% for entry in apps.cpus.data %}
-        ['{{apps.cpus.name[loop.index - 1]}}', {{apps.cpus.data[loop.index - 1]}}]{% if not loop.last %},{% endif %}
+        {% for entry in app_data.cpus.data %}
+        ['{{app_data.cpus.name[loop.index - 1]}}', {{app_data.cpus.data[loop.index - 1]}}]{% if not loop.last %},{% endif %}
         {% endfor %}
       ]);
 
       var options = {
-          title:'{{apps.cpus.title}}',
+          title:'{{app_data.cpus.title}}',
           width:'500',
           height:300,
           pieSliceText:'value',
@@ -78,13 +78,13 @@ function drawCharts() {
 
       var memData = google.visualization.arrayToDataTable([
         ['Team', 'Memory Allocated'],
-        {% for entry in apps.mem.data %}
-        ['{{apps.mem.name[loop.index - 1]}}', {{apps.mem.data[loop.index - 1]}}]{% if not loop.last %},{% endif %}
+        {% for entry in app_data.mem.data %}
+        ['{{app_data.mem.name[loop.index - 1]}}', {{app_data.mem.data[loop.index - 1]}}]{% if not loop.last %},{% endif %}
         {% endfor %}
       ]);
 
       var memOptions = {
-          title:'{{apps.mem.title}}',
+          title:'{{app_data.mem.title}}',
           width:'500',
           height:300,
           pieSliceText:'value',

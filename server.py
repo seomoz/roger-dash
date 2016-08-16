@@ -1,4 +1,4 @@
-from main import app
+from dash import app
 import cherrypy
 
 if __name__ == '__main__':
