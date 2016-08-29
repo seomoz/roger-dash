@@ -157,7 +157,7 @@ function getRunningAlertReport() {
     alert_data_table.addColumn('string', 'Time');
     $.ajax({
         dataType: 'JSON',
-        url: "{{ selected_alertd_endpoint }}/v1/stats/running-alert-report",
+        url: "{{ selected_alertd_endpoint }}/v1/running",
         context: document.body
     }).done(function(data) {
         console.log("Received Alert Report Data");
