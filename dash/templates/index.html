@@ -149,6 +149,7 @@ var table_options = {
 function getRunningAlertReport() {
     var alert_array = [];
     var alert_table = null;
+    //todo: provide the support to get all alerts running on all envs at once
     alert_table = new google.visualization.Table(
       document.getElementById('alert_notifications'));
     var alert_data_table = new google.visualization.DataTable();
@@ -156,12 +157,13 @@ function getRunningAlertReport() {
     alert_data_table.addColumn('string', 'Time');
     $.ajax({
         dataType: 'JSON',
-        url: "http://localhost:8008/stats/running-alert-report",
+        url: "{{ selected_alertd_endpoint }}/v1/stats/running-alert-report",
         context: document.body
     }).done(function(data) {
         console.log("Received Alert Report Data");
         $.each(data, function() {
-            alert_array.push([this.alert.description, this.timeOfExecution]);
+            var time = new Date(this.timeOfExecutionInMillis)
+            alert_array.push([this.alert.description, time.toISOString()]);
         });
         alert_data_table.addRows(alert_array);
         alert_table.draw(alert_data_table, table_options);
