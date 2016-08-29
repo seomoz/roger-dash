@@ -52,8 +52,8 @@ def getCuratedAppDetails(envs):
                 team = 'others'
                 for team_name, patterns in teamNames.items():
                     if isMatchingName(id, patterns):
-                            team = team_name
-                            break
+                        team = team_name
+                        break
                 if team in tasks:
                     apps[team] += 1
                     tasks[team] += running
