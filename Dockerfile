@@ -8,7 +8,7 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt
 
-EXPOSE 8080
+EXPOSE 7070
 
 ENTRYPOINT ["python"]
 CMD ["server.py"]

@@ -40,6 +40,12 @@ def index2():
     default_grp = 'others'
     app_data_w_grp = utils.apply_group_by_key(app_data, groups, default_grp)
 
+    alertd_endpoints = json.loads(os.environ['ALERTD_ENDPOINTS'])
+    selected_alertd_env ='prod'
+    if env:
+        selected_alertd_env = env
+    selected_alertd_endpoint = alertd_endpoints[selected_alertd_env]
+
     apps = {}
     tasks_data = {}
     cpus = {}

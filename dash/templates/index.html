@@ -1,28 +1,89 @@
 {% extends "layout.html" %}
 {% block body %}
-<table class="columns" style="width: 75%" align=center>
-    <tr>
-        <td>Click one of these to view specific details - {% for entry in envs %}<a href='?env={{entry}}'>{{ entry }}</a> | {% endfor %}<a href='?env='>ALL</td>
-    </tr>
-</table>
-<p/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js">
+</script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<table class="columns" style="width: 60%" align=center>
-    {% for h in range(data_h) %}
-    <tr>{% for w in range(data_w) %}
-        <td align=center>
-            <div id="chart_div_{{h}}_{{w}}" style="border: 1px solid #ccc"></div>
-        {% endfor %}</td>
-    {% endfor %}</tr>
-</table>
+<script type="text/javascript"
+src="https://www.gstatic.com/charts/loader.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RogerOS Dashboard</title>
+<link rel="stylesheet"
+href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script>
+$( function() {
+  $( "#menu" ).tabs();
+} );
+</script>
+<style>
+.AliceBlue-background {
+  background-color: AliceBlue;
+}
 
+.table-header-background {
+  background-color: #00CCFF;
+}
+
+.red-color {
+  color: red
+}
+
+.table-header-size{
+  height: 50px;
+  width: 100px;
+}
+.FontStyle{
+  text-align: center;
+  font-size: x-large;
+  font-family: monospace;
+}
+
+</style>
+<div id="page" style="width: 100%; background-color: AliceBlue;" align=center>
+    <div id="header" class="FontStyle" style="width: 100%; background-color: AliceBlue" align=center>
+        <div id="menu" class="FontStyle" style="background-color: AliceBlue">
+            <ul>
+                <li><a href="#allocation_charts" id="show_allocation_charts">
+                  Allocations
+        </a></li>
+                <li><a href="#alert_notifications"
+                       id="show_alert_notifications">Alerts
+        </a></li>
+            </ul>
+            <div id="allocation_charts" style="background-color: AliceBlue">
+              <table class="columns" style="width: 75%" align=center>
+                <tr>
+                  <td>Click one of these to view specific details -
+                    {% for entry in envs %}
+                    <a href='?env={{entry}}'>{{ entry }}</a> | {% endfor %}
+                    <a href='?env='>ALL</td>
+                    </tr>
+                  </table>
+                  <table class="columns" style="width: 60%" align=center>
+                    {% for h in range(data_h) %}
+                    <tr>{% for w in range(data_w) %}
+                      <td align=center>
+                        <div id="chart_div_{{h}}_{{w}}"></div>
+                        {% endfor %}
+                      </td>
+                      {% endfor %}
+                    </tr>
+                  </table>
+                </div>
+      <div id="alert_notifications" style="width: 95%; background-color: AliceBlue;" align=center>
+			</div>
+		</div>
+  </div>
+</div>
 <script type='text/javascript'>//<![CDATA[
-
-google.load('visualization', '1', {packages: ['corechart']});
+google.load('visualization', '1', {packages: ['corechart', 'table']});
 google.setOnLoadCallback(drawCharts);
+google.setOnLoadCallback(getRunningAlertReport);
 
 function drawCharts() {
-
     {% for h in range(data_h) %}
         {% for w in range(data_w) %}
             var data_{{h}}_{{w}} = google.visualization.arrayToDataTable([
@@ -31,24 +92,84 @@ function drawCharts() {
                 ['{{ k }}', {{ v }}]{% if not loop.last %},{% endif %}
                 {% endfor %}
                 ]);
-
             var options = {
                 title:'{{title[h][w]}}',
                 width:'500',
                 height:250,
                 pieSliceText:'value',
-                is3D: true };
-
-            var chart = new google.visualization.PieChart(document.getElementById('chart_div_{{h}}_{{w}}'));
+                is3D: true,
+                backgroundColor: 'AliceBlue'};
+            var chart = new google.visualization.PieChart
+            (document.getElementById('chart_div_{{h}}_{{w}}'));
             chart.draw(data_{{h}}_{{w}}, options);
-
         {% endfor %}
     {% endfor %}
+}
+console.log("Entering in jQuery block to call alert-report");
+var alert_notifications = $('#alert_notifications');
+var show_alert_notifications = $('#header #show_alert_notifications');
+var show_allocation_charts = $('#header #show_allocation_charts');
+show_allocation_charts.unbind();
+show_allocation_charts.click(function() {
+    $('#allocation_charts').show();
+});
+show_alert_notifications.unbind();
+show_alert_notifications.click(function() {
+    $('#alert_notifications').show();
+});
+//todo beautify this table
+var cssClassNames = {
+    'headerRow': 'table-header-size table-header-background FontStyle',
+    'tableRow': 'AliceBlue-background FontStyle',
+    'oddTableRow': 'AliceBlue-background FontStyle',
+    'selectedTableRow': 'AliceBlue-background FontStyle',
+    'hoverTableRow': 'red-color FontStyle',
+    'headerCell': 'table-header-size table-header-background FontStyle',
+    'tableCell': 'AliceBlue-background FontStyle',
+    'rowNumberCell': 'table-header-background underline-blue-font FontStyle'
+};
+var table_options = {
+    'showRowNumber': true,
+    'allowHtml': true,
+    'cssClassNames': cssClassNames,
+    width: '100%',
+    height: '100%'
+};
 
-    }
-//]]>
+/*
+* This method calls the alertd REST endpoint to get the latest ran alert
+* and draws a table using Google visualization DataTable object
+* todo:
+*      1. Change the concrete alertd URL
+*      2. Accumulate all alerts ran during the browser window session
+*      3. Make table scrollable
+*      4. Display alert details when alert is clicked or hovered over
+*/
 
+function getRunningAlertReport() {
+    var alert_array = [];
+    var alert_table = null;
+    //todo: provide the support to get all alerts running on all envs at once
+    alert_table = new google.visualization.Table(
+      document.getElementById('alert_notifications'));
+    var alert_data_table = new google.visualization.DataTable();
+    alert_data_table.addColumn('string', 'Latest Alert');
+    alert_data_table.addColumn('string', 'Time');
+    $.ajax({
+        dataType: 'JSON',
+        url: "{{ selected_alertd_endpoint }}/v1/running",
+        context: document.body
+    }).done(function(data) {
+        console.log("Received Alert Report Data");
+        $.each(data, function() {
+            var time = new Date(this.timeOfExecutionInMillis)
+            alert_array.push([this.alert.description, time.toISOString()]);
+        });
+        alert_data_table.addRows(alert_array);
+        alert_table.draw(alert_data_table, table_options);
+    });
+
+}
+setInterval(getRunningAlertReport(), 3000);//]]>
 </script>
-
-
 {% endblock %}
