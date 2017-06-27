@@ -1,0 +1,12 @@
+#!/bin/bash
+
+{{ $root := env "VAULT_ROOT" }}
+{{ $secretkey := printf "%s/all" $root }}
+{{ with secret $secretkey }}
+{{ range $k, $v := .Data }}
+export {{ $k }}={{ $v }}
+{{ end }}{{ end }}
+
+cd /app
+python server.py
+
