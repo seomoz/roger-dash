@@ -1,7 +1,9 @@
 FROM ubuntu:14.04
 
-RUN apt-get update -y
-RUN apt-get install -y python-pip python-dev build-essential
+RUN apt-get update -y && \
+    apt-get install -y python-pip python-dev build-essential wget && \
+    apt-get remove --purge -y build-essential $(apt-mark showauto) && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN wget https://releases.hashicorp.com/consul-template/0.18.2/consul-template_0.18.2_linux_amd64.tgz && \
     tar -zxf consul-template_0.18.2_linux_amd64.tgz && \
