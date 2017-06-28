@@ -42,7 +42,7 @@ kill_signal = "SIGTERM"
 max_stale = "10m"
 
 # This is the log level. 
-log_level = "debug"
+log_level = "warn"
 
 # This is the path to store a PID file which will contain the process ID of the
 # Consul Template process.
