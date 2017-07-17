@@ -14,6 +14,7 @@ if __name__ == '__main__':
 
     # Configure the server object
     server.socket_host = "0.0.0.0"
+    # TODO: Expose this as an env variable
     server.socket_port = 7070
     server.thread_pool = 30
 
