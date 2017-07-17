@@ -15,4 +15,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 7070
 
-CMD ["consul-template", "-config", "/app/vault.hcl"]
+CMD ["consul-template", "-config", "/app/consul-template.hcl"]
