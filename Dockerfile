@@ -4,9 +4,10 @@ RUN apt-get update -y && \
     apt-get install -y python-pip python-dev build-essential wget && \
     rm -rf /var/lib/apt/lists/*
 
-RUN wget https://releases.hashicorp.com/consul-template/0.18.2/consul-template_0.18.2_linux_amd64.tgz && \
-    tar -zxf consul-template_0.18.2_linux_amd64.tgz && \
-    mv ./consul-template /usr/local/bin/consul-template
+ADD https://github.com/funnylookinhat/vaultexec/releases/download/v0.2.3/vaultexec_linux_amd64 /usr/local/bin/vaultexec
+ADD https://github.com/seomoz/roger-fetch-vault-token/releases/download/v0.3.1/roger-fetch-vault-token_linux_amd64 /usr/local/bin/roger-fetch-vault-token
+RUN chmod +x /usr/local/bin/vaultexec && \
+    chmod +x /usr/local/bin/roger-fetch-vault-token
 
 COPY . /app
 WORKDIR /app
@@ -15,4 +16,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 7070
 
-CMD ["consul-template", "-config", "/app/vault.hcl"]
+CMD ["python", "server.py"]
