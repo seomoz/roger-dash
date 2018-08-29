@@ -1,0 +1,5 @@
+rogervault-version: 1
+application-id: /application-platforms/roger-dash
+application-type: marathon
+secret-paths:
+- secret/application-platforms/roger-dash/prod/all
